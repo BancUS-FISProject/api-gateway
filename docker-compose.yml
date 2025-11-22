@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  api-gateway:
+    image: nginx:latest
+    ports:
+      - "10000:80"
+      - "10443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certs:/etc/nginx/certs
+    networks:
+      - bankus-net
+    depends_on:
+      microservice-accounts:
+        condition: service_healthy
+
+  microservice-accounts:
+    image: alvvigsua/microservice-accounts:latest
+    container_name: accounts-service
+    environment:
+      - MONGO_CONNECTION_STRING=mongodb://bankus_user:bankus_secret_pass@localhost:27017
+      - MONGO_DATABASE_NAME=accounts
+      - REDIS_HOST=redis-cache
+      - REDIS_PORT=6379
+    networks:
+      - bankus-net
+    depends_on:
+      redis-cache:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/v1/health"]
+
+  redis-cache:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    networks:
+      - bankus-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+networks:
+  bankus-net:
+    driver: bridge
