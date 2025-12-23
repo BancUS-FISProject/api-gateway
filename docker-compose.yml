@@ -1,5 +1,6 @@
 version: '3.8'
 services:
+
   api-gateway:
     image: nginx:latest
     ports:
@@ -14,6 +15,7 @@ services:
       microservice-accounts:
         condition: service_healthy
 
+<<<<<<< Updated upstream
   mongo:
     image: mongo:7
     container_name: bankus-mongo
@@ -31,12 +33,41 @@ services:
       timeout: 5s
       retries: 5
 
+=======
+
+  # API en puerto 8000
+>>>>>>> Stashed changes
   microservice-accounts:
     image: alvvigsua/microservice-accounts:latest
     container_name: accounts-service
     environment:
+<<<<<<< Updated upstream
       - MONGO_CONNECTION_STRING=mongodb://bankus_user:bankus_secret_pass@mongo:27017/accounts?authSource=admin
+=======
+      - MONGO_CONNECTION_STRING=mongodb+srv://alvvigsua_db_user:8lwRGxRQlvETL3Ui@microservicio-cuentas.x2dz0fd.mongodb.net/?appName=Microservicio-Cuentas
+>>>>>>> Stashed changes
       - MONGO_DATABASE_NAME=accounts
+      - REDIS_HOST=redis-cache
+      - REDIS_PORT=6379
+      - CURRENCIES_MICROSERVICE_BASE_URL=http://microservice-currencies:8000
+      - CARD_MICROSERVICE_BASE_URL=http://microservice-cards:3000
+    networks:
+      - bankus-net
+    depends_on:
+      redis-cache:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/v1/health"]
+
+
+  # API en puerto 8000
+  microservice-currencies:
+    image: alvvigsua/microservice-currencies:latest
+    container_name: currencies-service
+    environment:
+      - EXTERNAL_API_KEY=67003e5001msha772ef722235103p1373e7jsn12b8883ecce9
+      - EXTERNAL_API_URL=https://currency-converter-pro1.p.rapidapi.com/latest-rates
+      - EXTERNAL_API_HOST=currency-converter-pro1.p.rapidapi.com
       - REDIS_HOST=redis-cache
       - REDIS_PORT=6379
     networks:
@@ -47,7 +78,69 @@ services:
       redis-cache:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/v1/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/actuator/health"]
+
+
+  # Api en puerto 3000
+  microservice-cards:
+    image: pabmedmej/microservice-cards:latest
+    container_name: cards-service
+    environment:
+      - MONGODB_URI=mongodb+srv://srmedinillx_db_user:arartQ2R1LM5pUAD@cluster0.cwmpopc.mongodb.net/?appName=Cluster0
+      - MONGODB_DB=cards_db
+      - REDIS_URL=redis://redis-cache:6379
+    networks:
+      - bankus-net
+    depends_on:
+      redis-cache:
+        condition: service_healthy
+
+
+  microservice-userauth:
+    image: rubjimjim/microservice-userauth:latest
+    container_name: microservice-userauth
+    restart: unless-stopped
+    environment:
+      PORT: ${PORT:-3000}
+      MONGO_URI: ${MONGO_URI:-mongodb://mongodb:27017/userauth_db}
+      MONGO_HOST: ${MONGO_HOST:-mongodb}
+      MONGO_PORT: ${MONGO_PORT:-27017}
+      MONGO_DB: ${MONGO_DB:-userauth_db}
+      JWT_SECRET: ${JWT_SECRET:-changeme}
+    networks:
+      - bankus-net
+    depends_on:
+      - mongodb
+
+
+  microservice-antifraude:
+    image: rubjimjim/microservice-anti-fraud:latest
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/antiFraud
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+#      - REDIS_URL=redis://redis-cache:6379
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+
+  mongodb:
+    image: mongo:7
+    container_name: mongodb
+    restart: unless-stopped
+    command: ["mongod", "--quiet", "--logpath", "/dev/null"]
+    networks:
+      - bankus-net
+    volumes:
+      - mongo-data:/data/db
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   redis-cache:
     image: redis:alpine
@@ -61,6 +154,7 @@ services:
       timeout: 3s
       retries: 5
 
+<<<<<<< Updated upstream
   microservice-user-auth:
     image: rubjimjim/microservice-userauth:latest
     container_name: userauth-service
@@ -81,10 +175,29 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+=======
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - bankus-net
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+>>>>>>> Stashed changes
 
 networks:
   bankus-net:
     driver: bridge
 
 volumes:
+<<<<<<< Updated upstream
   mongo-data:
+=======
+  mongo-data:
+>>>>>>> Stashed changes
