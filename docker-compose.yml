@@ -123,6 +123,44 @@ services:
       timeout: 5s
       retries: 5
 
+
+  microservice-anti-fraud:
+    image: angelmr01/microservice-antifraud:v1
+    container_name: antifraud-service
+    ports:
+      - "3001:3000"
+    environment:
+      - MONGO_URI=${MONGO_DOCKER_URI}
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - MONGO_DB=antifraud_db
+    depends_on:
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - bankus-net
+    restart: on-failure
+
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - bankus-net
+
+
 networks:
   bankus-net:
     driver: bridge
