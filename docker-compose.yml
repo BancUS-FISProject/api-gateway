@@ -99,6 +99,31 @@ services:
       timeout: 5s
       retries: 5
 
+  # API en puerto 8000
+  microservice-transfers:
+    image: microservice-transfers:local
+    container_name: transfers-service
+    environment:
+      - MONGO_CONNECTION_STRING=mongodb://bankus_user:bankus_secret_pass@mongo:27017
+      - MONGO_DATABASE_NAME=transactions_db
+      - ACCOUNTS_SERVICE_URL=http://microservice-accounts:8000
+      - TRANSFERS_SERVICE_URL=http://microservice-transfers:8000
+      - REDIS_HOST=redis-cache
+      - REDIS_PORT=6379
+    command: uvicorn src.transfers.app:create_app --factory --host 0.0.0.0 --port 8000
+    networks:
+      - bankus-net
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   microservice-user-auth:
     image: rubjimjim/microservice-userauth:latest
     container_name: userauth-service
