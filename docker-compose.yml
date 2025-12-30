@@ -20,7 +20,7 @@ services:
     image: alvvigsua/microservice-accounts:latest
     container_name: accounts-service
     environment:
-      - MONGO_CONNECTION_STRING=mongodb+srv://alvvigsua_db_user:8lwRGxRQlvETL3Ui@microservicio-cuentas.x2dz0fd.mongodb.net/?appName=Microservicio-Cuentas
+      - MONGO_CONNECTION_STRING=mongodb+srv://alvvigsua_db_user:g4tPaQcYxCwkZ12j@cluster0.nznymsu.mongodb.net/?appName=Cluster0
       - MONGO_DATABASE_NAME=accounts
       - REDIS_HOST=redis-cache
       - REDIS_PORT=6379
@@ -101,7 +101,7 @@ services:
 
   # API en puerto 8000
   microservice-transfers:
-    image: microservice-transfers:local
+    image: jearpo/microservice-transfers:latest
     container_name: transfers-service
     environment:
       - MONGO_CONNECTION_STRING=mongodb://bankus_user:bankus_secret_pass@mongo:27017
@@ -180,7 +180,7 @@ services:
       - bankus-net
 
   microservice-bank-statements:
-    image: edithct/microservice-bank-statements:latest
+    image: edithct/microservice-bank-statements:1.0.0
     container_name: bank-statements-service
     environment:
       - PORT=3000
