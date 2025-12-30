@@ -148,6 +148,37 @@ services:
       timeout: 5s
       retries: 5
 
+  microservice-scheduled-payments:
+    image: joscosguius/microservice-scheduler
+    container_name: scheduled_payments
+    environment:
+      - MONGO_CONNECTION_STRING=mongodb://mongodb-scheduler:27017
+      - MONGO_DATABASE_NAME=scheduled_payments
+      - TRANSFER_SERVICE_URL=http://IP_SERVICIO:8001/api/v1/transactions
+      - SCHEDULER_INTERVAL_SECONDS=60
+      - LOG_LEVEL=INFO
+      - LOG_FILE=log.txt
+      - LOG_BACKUP_COUNT=7
+      - HEALTHCHECK_URL=http://localhost:8000/api/v1/scheduled-payments/health
+      - NTP_SERVER=pool.ntp.org
+      - NTP_REFRESH_SECONDS=60
+      - NTP_TIMEOUT_SECONDS=3
+    networks:
+      - bankus-net
+    depends_on:
+      - mongodb-scheduler
+    healthcheck:
+      test: CMD-SHELL curl -f "$HEALTHCHECK_URL"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  mongodb-scheduler:
+    image: mongo:7
+    container_name: mongodb-scheduler
+    networks:
+      - bankus-net
+
 networks:
   bankus-net:
     driver: bridge
