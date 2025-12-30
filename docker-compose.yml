@@ -220,6 +220,7 @@ services:
     image: angelmr01/microservice-antifraud:latest
     container_name: antifraud-service
     environment:
+      - PORT=8000
       - MONGO_URI=mongodb://bankus_user:bankus_secret_pass@mongo:27017/antifraud_db?authSource=admin
       - MONGO_DB=antifraud_db
       - ACCOUNTS_MS_URL=http://microservice-accounts:8000
