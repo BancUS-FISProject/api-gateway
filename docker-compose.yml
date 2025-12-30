@@ -179,6 +179,32 @@ services:
     networks:
       - bankus-net
 
+  microservice-notifications:
+    image: elenaberdugo/microservice-notifications:latest
+    container_name: notifications
+    environment:
+      - MONGO_CONNECTION_STRING=mongodb://mongodb-notifications:27017
+      - MONGO_DATABASE_NAME=notifications_db
+      - SENDGRID_FROM_EMAIL=elenaberdu@gmail.com
+    networks:
+      - bankus-net
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb-notifications:
+    image: mongo:7
+    container_name: mongodb-notifications
+    networks:
+      - bankus-net
+
 networks:
   bankus-net:
     driver: bridge
