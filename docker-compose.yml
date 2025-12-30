@@ -216,6 +216,22 @@ services:
       timeout: 5s
       retries: 5
 
+  microservice-anti-fraud:
+    image: angelmr01/microservice-antifraud:latest
+    container_name: antifraud-service
+    environment:
+      - MONGO_URI=mongodb://bankus_user:bankus_secret_pass@mongo:27017/antifraud_db?authSource=admin
+      - MONGO_DB=antifraud_db
+      - ACCOUNTS_MS_URL=http://microservice-accounts:8000
+      - BANK_STATEMENTS_MS_URL=http://microservice-bank-statements:8000
+      - ACCOUNTS_BLOCK_TIMEOUT_MS=3000
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - bankus-net
+    restart: on-failure
+
   mongodb-notifications:
     image: mongo:7
     container_name: mongodb-notifications
