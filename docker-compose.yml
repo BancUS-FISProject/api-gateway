@@ -202,7 +202,9 @@ services:
     environment:
       - MONGO_CONNECTION_STRING=mongodb://mongodb-notifications:27017
       - MONGO_DATABASE_NAME=notifications_db
-      - SENDGRID_FROM_EMAIL=elenaberdu@gmail.com
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - SENDGRID_FROM_EMAIL=${SENDGRID_FROM_EMAIL}
+    command: uvicorn src.notifications.app:create_app --factory --host 0.0.0.0 --port 8000
     networks:
       - bankus-net
     depends_on:
@@ -215,6 +217,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  mongodb-notifications:
+    image: mongo:7
+    container_name: mongodb-notifications
+    networks:
+      - bankus-net
 
   microservice-anti-fraud:
     image: angelmr01/microservice-antifraud:latest
@@ -237,12 +244,6 @@ services:
       timeout: 5s
       retries: 5
     restart: on-failure
-
-  mongodb-notifications:
-    image: mongo:7
-    container_name: mongodb-notifications
-    networks:
-      - bankus-net
 
 networks:
   bankus-net:
