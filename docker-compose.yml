@@ -226,11 +226,16 @@ services:
       - ACCOUNTS_MS_URL=http://microservice-accounts:8000
       - BANK_STATEMENTS_MS_URL=http://microservice-bank-statements:8000
       - ACCOUNTS_BLOCK_TIMEOUT_MS=3000
+    networks:
+      - bankus-net
     depends_on:
       mongo:
         condition: service_healthy
-    networks:
-      - bankus-net
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: on-failure
 
   mongodb-notifications:
