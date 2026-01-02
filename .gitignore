@@ -1,6 +1,5 @@
 .idea/
 docker-compose.yml
-kubernetes-deployment.yaml
 
 private/
 .env
