@@ -549,7 +549,7 @@ spec:
               value: "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"
           livenessProbe:
             exec:
-              command: ["curl", "-f", "http://localhost:8000/health"]
+              command: ["curl", "-f", "http://localhost:8000/v1/notifications/health"]
             initialDelaySeconds: 30
             periodSeconds: 30
             timeoutSeconds: 10
