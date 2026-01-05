@@ -508,7 +508,7 @@ spec:
               command: ["node", "-e", "fetch('http://localhost:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
             initialDelaySeconds: 30
             periodSeconds: 30
-            timeoutSeconds: 10
+            timeoutSeconds: 11
             failureThreshold: 5
 ---
 apiVersion: v1
