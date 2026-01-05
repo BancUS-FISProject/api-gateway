@@ -613,8 +613,10 @@ spec:
               value: "redis://redis-cache:6379"
             - name: ACCOUNTS_MS_URL
               value: "http://microservice-accounts:8000"
-            - name: BANK_STATEMENTS_MS_URL
-              value: "http://microservice-bank-statements:8000" # Nota: Revisa que el puerto coincida con el service de bank-statements
+            - name: TRANSFERS_MS_URL
+              value: "http://microservice-transfers:8000"
+            - name: NOTIFICATIONS_MS_URL
+              value: "http://microservice-notifications:8000"
             - name: ACCOUNTS_BLOCK_TIMEOUT_MS
               value: "3000"
           livenessProbe:

@@ -241,7 +241,8 @@ services:
       REDIS_PORT: "6379"
       REDIS_URL: "redis://redis-cache:6379"
       ACCOUNTS_MS_URL: "http://microservice-accounts:8000"
-      BANK_STATEMENTS_MS_URL: "http://microservice-bank-statements:3000" # Corregido puerto: en yaml era :8000 pero el service/container era :3000
+      TRANSFERS_MS_URL: "http://microservice-transfers:8000"
+      NOTIFICATIONS_MS_URL: "http://microservice-notifications:8000"
       ACCOUNTS_BLOCK_TIMEOUT_MS: "3000"
     networks:
       - bankus-network
