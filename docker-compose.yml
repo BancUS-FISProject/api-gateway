@@ -182,8 +182,12 @@ services:
     container_name: bank-statements-service
     environment:
       - PORT=3000
-      - MONGO_URI=mongodb://bankus_user:bankus_secret_pass@mongo:27017/bankstatements?authSource=admin
       - NODE_ENV=production
+      - MONGO_URI=mongodb://bankus_user:bankus_secret_pass@mongo:27017/bankstatements?authSource=admin
+      - MS_STRATEGY=http
+      - STRATEGIES_HTTP_ACCOUNTS_BASE=http://microservice-accounts:8000
+      - STRATEGIES_HTTP_TRANSACTIONS_BASE=http://microservice-transfers:8000
+      - STRATEGIES_HTTP_NOTIFICATIONS_BASE=http://microservice-notifications:8000
     networks:
       - bankus-net
     depends_on:
