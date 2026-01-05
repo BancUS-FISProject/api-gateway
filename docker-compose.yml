@@ -164,8 +164,15 @@ services:
       MONGO_CONNECTION_STRING: "mongodb://mongodb-scheduler:27017"
       MONGO_DATABASE_NAME: "scheduled_payments"
       TRANSFER_SERVICE_URL: "http://microservice-transfers:8000/v1/transactions"
+      ACCOUNTS_SERVICE_URL: "http://accounts-service:8000/v1/account/{iban}"
+      SUBSCRIPTION_BASIC: 1
+      SUBSCRIPTION_STUDENT: 10
+      SUBSCRIPTION_PRO: -1 # -1 = ilimitado
       SCHEDULER_INTERVAL_SECONDS: "60"
       HEALTHCHECK_URL: "http://localhost:8000/v1/scheduled-payments/health"
+      NTP_SERVER: pool.ntp.org
+      NTP_REFRESH_SECONDS: 60
+      NTP_TIMEOUT_SECONDS: 3
     networks:
       - bankus-network
     depends_on:
@@ -308,3 +315,4 @@ volumes:
 networks:
   bankus-network:
     driver: bridge
+    name: bankus-net

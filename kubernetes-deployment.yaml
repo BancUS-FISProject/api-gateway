@@ -442,10 +442,24 @@ spec:
               value: "scheduled_payments"
             - name: TRANSFER_SERVICE_URL
               value: "http://microservice-transfers:8000/v1/transactions"
+            - name: ACCOUNTS_SERVICE_URL
+              value: "http://accounts-service:8000/v1/account/{iban}"
+            - name: SUBSCRIPTION_BASIC
+              value: 1
+            - name: SUBSCRIPTION_STUDENT
+              value: 10
+            - name: SUBSCRIPTION_PRO
+              value: -1
             - name: SCHEDULER_INTERVAL_SECONDS
               value: "60"
             - name: HEALTHCHECK_URL
               value: "http://localhost:8000/v1/scheduled-payments/health"
+            - name: NTP_SERVER
+              value: "pool.ntp.org"
+            - name: NTP_REFRESH_SECONDS
+              value: 60
+            - name: NTP_TIMEOUT_SECONDS
+              value: 3
           livenessProbe:
             exec:
               command: ["curl", "-f", "http://localhost:8000/v1/scheduled-payments/health"]
