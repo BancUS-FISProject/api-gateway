@@ -209,6 +209,7 @@ services:
       interval: 30s
       timeout: 11s
       retries: 5
+    restart: on-failure
 
   # --- MICROSERVICE NOTIFICATIONS ---
   microservice-notifications:
