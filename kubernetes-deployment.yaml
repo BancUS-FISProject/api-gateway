@@ -15,6 +15,7 @@ stringData:
   JWT_SECRET: "changeme"
   CAPTCHA_SECRET: "6LcbqzYsAAAAAK-R9YeEAReNG8Ruc8CX4F9HJfh3"
   RAPIDAPI_KEY: "67003e5001msha772ef722235103p1373e7jsn12b8883ecce9"
+  SENDGRID_API_KEY: "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"
 ---
 # --- REDIS CACHE ---
 apiVersion: apps/v1
@@ -112,10 +113,10 @@ spec:
                 - bash
                 - -c
                 - "mongosh --quiet -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --authenticationDatabase admin --eval \"db.adminCommand('ping')\""
-            initialDelaySeconds: 40  # Esperamos 40s a que Mongo arranque del todo antes de molestarle
-            periodSeconds: 15        # Comprobamos cada 15 segundos
+            initialDelaySeconds: 40
+            periodSeconds: 15
             timeoutSeconds: 30
-            failureThreshold: 5      # Si falla 5 veces seguidas, reiniciamos
+            failureThreshold: 5
       volumes:
         - name: mongo-data
           persistentVolumeClaim:
@@ -157,7 +158,8 @@ spec:
             - containerPort: 8000
           env:
             - name: MONGO_CONNECTION_STRING
-              value: "mongodb+srv://alvvigsua_db_user:g4tPaQcYxCwkZ12j@cluster0.nznymsu.mongodb.net/?appName=Cluster0"
+              # Actualizado según docker-compose (cluster0.xjcvtil)
+              value: "mongodb+srv://alvvigsua_db_user:g4tPaQcYxCwkZ12j@cluster0.xjcvtil.mongodb.net/?appName=Cluster0"
             - name: MONGO_DATABASE_NAME
               value: "accounts"
             - name: REDIS_HOST
@@ -279,7 +281,6 @@ spec:
               value: "cards_db"
             - name: REDIS_URL
               value: "redis://redis-cache:6379"
-          # No healthcheck definido en docker-compose, omitido aquí.
 ---
 apiVersion: v1
 kind: Service
@@ -443,13 +444,14 @@ spec:
             - name: TRANSFER_SERVICE_URL
               value: "http://microservice-transfers:8000/v1/transactions"
             - name: ACCOUNTS_SERVICE_URL
-              value: "http://accounts-service:8000/v1/account/{iban}"
+              # Corregido: 'accounts-service' no existe, es 'microservice-accounts'
+              value: "http://microservice-accounts:8000/v1/accounts/{iban}"
             - name: SUBSCRIPTION_BASIC
-              value: 1
+              value: "1"
             - name: SUBSCRIPTION_STUDENT
-              value: 10
+              value: "10"
             - name: SUBSCRIPTION_PRO
-              value: -1
+              value: "-1"
             - name: SCHEDULER_INTERVAL_SECONDS
               value: "60"
             - name: HEALTHCHECK_URL
@@ -457,9 +459,9 @@ spec:
             - name: NTP_SERVER
               value: "pool.ntp.org"
             - name: NTP_REFRESH_SECONDS
-              value: 60
+              value: "60"
             - name: NTP_TIMEOUT_SECONDS
-              value: 3
+              value: "3"
           livenessProbe:
             exec:
               command: ["curl", "-f", "http://localhost:8000/v1/scheduled-payments/health"]
@@ -568,7 +570,10 @@ spec:
             - name: SENDGRID_FROM_EMAIL
               value: "elenaberdu@gmail.com"
             - name: SENDGRID_API_KEY
-              value: "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"
+              valueFrom:
+                secretKeyRef:
+                  name: bankus-secrets
+                  key: SENDGRID_API_KEY
           livenessProbe:
             exec:
               command: ["curl", "-f", "http://localhost:8000/v1/notifications/health"]

@@ -43,7 +43,7 @@ services:
     ports:
       - "8001:8000" # Mapeado al 8001 en host para evitar conflictos si pruebas local
     environment:
-      MONGO_CONNECTION_STRING: "mongodb+srv://alvvigsua_db_user:g4tPaQcYxCwkZ12j@cluster0.nznymsu.mongodb.net/?appName=Cluster0"
+      MONGO_CONNECTION_STRING: "mongodb+srv://alvvigsua_db_user:g4tPaQcYxCwkZ12j@cluster0.xjcvtil.mongodb.net/?appName=Cluster0"
       MONGO_DATABASE_NAME: "accounts"
       REDIS_HOST: "redis-cache"
       REDIS_PORT: "6379"
@@ -164,7 +164,7 @@ services:
       MONGO_CONNECTION_STRING: "mongodb://mongodb-scheduler:27017"
       MONGO_DATABASE_NAME: "scheduled_payments"
       TRANSFER_SERVICE_URL: "http://microservice-transfers:8000/v1/transactions"
-      ACCOUNTS_SERVICE_URL: "http://accounts-service:8000/v1/account/{iban}"
+      ACCOUNTS_SERVICE_URL: "http://microservice-accounts:8000/v1/accounts/{iban}"
       SUBSCRIPTION_BASIC: 1
       SUBSCRIPTION_STUDENT: 10
       SUBSCRIPTION_PRO: -1 # -1 = ilimitado
