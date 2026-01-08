@@ -163,7 +163,7 @@ services:
     environment:
       MONGO_CONNECTION_STRING: "mongodb://mongodb-scheduler:27017"
       MONGO_DATABASE_NAME: "scheduled_payments"
-      TRANSFER_SERVICE_URL: "http://microservice-transfers:8000/v1/transactions"
+      TRANSFER_SERVICE_URL: "http://microservice-transfers:8000/v1/transactions/"
       ACCOUNTS_SERVICE_URL: "http://microservice-accounts:8000/v1/accounts/{iban}"
       SUBSCRIPTION_BASIC: 1
       SUBSCRIPTION_STUDENT: 10
