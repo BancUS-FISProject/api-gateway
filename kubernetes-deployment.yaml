@@ -442,7 +442,7 @@ spec:
             - name: MONGO_DATABASE_NAME
               value: "scheduled_payments"
             - name: TRANSFER_SERVICE_URL
-              value: "http://microservice-transfers:8000/v1/transactions"
+              value: "http://microservice-transfers:8000/v1/transactions/"
             - name: ACCOUNTS_SERVICE_URL
               # Corregido: 'accounts-service' no existe, es 'microservice-accounts'
               value: "http://microservice-accounts:8000/v1/accounts/{iban}"
