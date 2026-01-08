@@ -785,4 +785,4 @@ spec:
   ports:
     - name: http
       port: 10000        # Puerto expuesto al exterior
-      targetPort: 80
+      targetPort: 443
